@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css?family=Montserrat:300,400,500,700&display=swap"
+    />
+    <link rel="stylesheet" href="styles.css" />
+    <script src="app.js" type="module" defer></script>
+    <title>Google Gemini</title>
+  </head>
+  <body>
+    <h1>Google Gemini</h1>
+    <hr />
+    <form id="prompt-form">
+      <label for="prompt">Enter your prompt:</label>
+      <textarea
+        id="prompt"
+        name="prompt"
+        placeholder="Ask Gemini..."
+        rows="5"
+        cols="40"
+      ></textarea>
+      <input type="submit" value="Search" />
+    </form>
+
+    <div id="results"></div>
+    
+  </body>
+</html>

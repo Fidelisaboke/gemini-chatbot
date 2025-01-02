@@ -1,0 +1,29 @@
+body {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1.25em;
+}
+
+body > h1 {
+    font-size: 1.5em;
+}
+
+#prompt-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#prompt-form > * {
+    margin-bottom: 20px;
+}
+
+textarea {
+    width: 80%;
+    font-size: 1.25em;
+}
+
+#results {
+    margin: 0% auto;
+    width: 80%;
+    font-size: 0.8em;
+}
