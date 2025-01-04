@@ -1,29 +1,173 @@
+/* Montserrat font from Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Poppins", sans-serif;
+}
+
+:root {
+    /* Dark theme */
+    --text-color: #f0f0f0;
+    --subheading-color: #828282;
+    --placeholder-color: #a6a6a6;
+    --primary-color: #242424;
+    --secondary-color: #383838;
+    --secondary-hover-color: #444;
+}
+
 body {
-    font-family: 'Montserrat', sans-serif;
-    font-size: 1.25em;
+    background: var(--primary-color);
 }
 
-body > h1 {
-    font-size: 1.5em;
+.header, .typing-area {
+    color: var(--text-color);
 }
 
-#prompt-form {
+.header, .typing-form {
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.header{
+    margin-top: 7vh;
+    padding: 1rem;
+}
+
+.header :where(.title, .subtitle){
+    font-weight: 500;
+    line-height: 3.6rem;
+}
+
+.header .title{
+    font-size: 2.7rem;
+    width: fit-content;
+    background-clip: text;
+    background: linear-gradient(to right, #1093ff, #ff29d1);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.header .subtitle {
+    font-size: 2.4rem;
+    color: var(--subheading-color);
+}
+
+.suggestion-list {
+    margin-top: 9.5vh;
+    list-style: none;
+    display: flex;
+    gap: 1.25rem;
+}
+
+.suggestion-list .suggestion {
+    padding: 1.25rem;
+    cursor: pointer;
+    width: 227px;
+    flex-shrink: 0;
     display: flex;
     flex-direction: column;
+    align-items: flex-end;
+    justify-content: space-between;
+    border-radius: 0.75rem;
+    background: var(--secondary-color);
+}
+
+.suggestion-list .suggestion:hover {
+    background: var(--secondary-hover-color);
+}
+
+.suggestion-list .suggestion .text {
+    font-weight: 400;
+}
+
+.suggestion-list .suggestion .icon {
+    height: 42px;
+    width: 42px;
+    font-size: 1.3rem;
+    margin-top: 2.5rem;
+    display: flex;
     align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: var(--primary-color);
 }
 
-#prompt-form > * {
-    margin-bottom: 20px;
+.typing-area {
+    position: fixed;
+    width: 100%;
+    bottom: 0;
+    padding: 1rem;
+    background: var(--primary-color);
 }
 
-textarea {
-    width: 80%;
-    font-size: 1.25em;
+.typing-area :where(.typing-form, .action-buttons) {
+    display: flex;
+    gap: 0.75rem;
 }
 
-#results {
-    margin: 0% auto;
-    width: 80%;
-    font-size: 0.8em;
+.typing-area .input-wrapper {
+    height: 56px;
+    width: 100%;
+    display: flex;
+    position: relative;
+}
+
+.typing-area .input-box {
+    width: 100%;
+    height: 100%;
+    border: none;
+    outline: none;
+    font-size: 1rem;
+    color: var(--text-color);
+    border-radius: 6.2rem;
+    padding: 1.1rem 4rem 1.1rem 1.5rem;
+    background: var(--secondary-color);
+}
+
+.typing-area .input-box:focus {
+    background: var(--secondary-hover-color);
+}
+
+.typing-area .input-box::placeholder{
+    color: var(--placeholder-color);
+}
+
+.typing-area .icon {
+    height: 56px;
+    width: 56px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: var(--secondary-color);
+}
+
+.typing-area .icon:hover {
+    background: var(--secondary-hover-color)!important;
+}
+
+.typing-area .input-wrapper .icon {
+    position: absolute;
+    right: 0;
+    outline: none;
+    border: none;
+    background: none;
+    color: var(--text-color);
+    transform: scale(0);
+    transition: transform 0.2s ease;
+}
+
+.typing-area .input-wrapper .input-box:valid ~ .icon {
+    transform: scale(1);
+}
+
+.typing-area .disclaimer-text {
+    font-size: 0.85rem;
+    margin-top: 1rem;
+    text-align: center;
+    color: var(--placeholder-color);
 }
