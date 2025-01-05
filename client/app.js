@@ -5,6 +5,7 @@ import { marked } from "https://cdn.jsdelivr.net/npm/marked/lib/marked.esm.js";
 
 
 const chatList = document.querySelector(".chat-list");
+const suggestions = document.querySelectorAll(".suggestion-list .suggestion");
 const toggleThemeButton = document.getElementById("toggle-theme-button");
 const deleteChatButton = document.getElementById("delete-chat-button");
 
@@ -218,6 +219,14 @@ function showTypingEffect(response, incomingMessageDiv) {
 
   }, typingSpeed);
 }
+
+// Event listeners for the suggestions on suggestions list
+suggestions.forEach((suggestion) => {
+  suggestion.addEventListener("click", () => {
+    document.getElementById("prompt").value = suggestion.querySelector(".text").textContent;
+    handleOutgoingMessage();
+  });
+});
 
 // Theme toggle functionality
 toggleThemeButton.addEventListener("click", () => {

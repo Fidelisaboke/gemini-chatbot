@@ -70,16 +70,21 @@ body.hide-header .header {
 }
 
 .suggestion-list {
+    width: 100%;
     margin-top: 9.5vh;
     list-style: none;
     display: flex;
     gap: 1.25rem;
+    overflow: hidden;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
 }
 
 .suggestion-list .suggestion {
     padding: 1.25rem;
     cursor: pointer;
-    width: 227px;
+    width: 222px;
     flex-shrink: 0;
     display: flex;
     flex-direction: column;
@@ -87,6 +92,7 @@ body.hide-header .header {
     justify-content: space-between;
     border-radius: 0.75rem;
     background: var(--secondary-color);
+    transition: 0.2s ease;
 }
 
 .suggestion-list .suggestion:hover {
