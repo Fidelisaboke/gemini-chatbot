@@ -20,7 +20,7 @@ function loadLocalStorageData() {
 
   // Set the theme and chat history
   document.body.classList.toggle("light-theme", isLightMode);
-  toggleThemeButton.textContent = isLightMode ? "dark_mode" : "light_mode";
+  toggleThemeButton.innerText = isLightMode ? "dark_mode" : "light_mode";
   chatList.innerHTML = chatHistory || "";
 
   document.body.classList.toggle("hide-header", chatHistory);
@@ -123,7 +123,7 @@ function processPrompt(prompt) {
       // Display an error message
       const incomingMessageDiv = handleIncomingMessage();
       const textElement = incomingMessageDiv.querySelector(".text");
-      textElement.textContent =
+      textElement.innerText =
         `An error occurred while processing the request. Error: ${error.message}`.trim();
       textElement.classList.add("error");
     })
@@ -170,7 +170,7 @@ function handlePromptResults(prompt, API_URL) {
       // Display an error message
       const incomingMessageDiv = handleIncomingMessage();
       const textElement = incomingMessageDiv.querySelector(".text");
-      textElement.textContent =
+      textElement.innerText =
         `An error occurred while processing the request. Error: ${error.message}`.trim();
       textElement.classList.add("error");
     });
@@ -205,11 +205,11 @@ function handleIncomingMessage() {
  * @param {*} copyIcon
  */
 function copyToClipboard(copyIcon) {
-  const messageText = copyIcon.parentElement.querySelector(".text").textContent;
+  const messageText = copyIcon.parentElement.querySelector(".text").innerText;
   navigator.clipboard.writeText(messageText);
-  copyIcon.textContent = "done";
+  copyIcon.innerText = "done";
   setTimeout(() => {
-    copyIcon.textContent = "content_copy";
+    copyIcon.innerText = "content_copy";
   }, 1000);
 }
 
@@ -218,15 +218,18 @@ function copyToClipboard(copyIcon) {
  * @param {*} response - The response from the GPT-3 API
  * @param {*} incomingMessageDiv - The incoming message div
  */
-function showTypingEffect(response, incomingMessageDiv) {
+function showTypingEffect(response, incomingMessageDiv, parsedText) {
   const textElement = incomingMessageDiv.querySelector(".text");
   const copyIcon = incomingMessageDiv.querySelector(".icon");
+  copyIcon.classList.add("hide");
+
   const words = response.split(" ");
   const typingSpeed = 20;
-  let i = 0;
+  let currWordIndex = 0;
 
   const interval = setInterval(() => {
-    if (i === words.length) {
+    textElement.innerText += (currWordIndex === 0? '' : ' ') + words[currWordIndex++];
+    if (currWordIndex === words.length) {
       clearInterval(interval);
       isResponseGenerating = false;
       copyIcon.classList.remove("hide");
@@ -234,17 +237,13 @@ function showTypingEffect(response, incomingMessageDiv) {
       return;
     }
 
-    textElement.textContent += " " + words[i];
-    i++;
-    copyIcon.classList.add("hide");
-
   }, typingSpeed);
 }
 
 // Event listeners for the suggestions on suggestions list
 suggestions.forEach((suggestion) => {
   suggestion.addEventListener("click", () => {
-    document.getElementById("prompt").value = suggestion.querySelector(".text").textContent;
+    document.getElementById("prompt").value = suggestion.querySelector(".text").innerText;
     handleOutgoingMessage();
   });
 });
@@ -256,7 +255,7 @@ toggleThemeButton.addEventListener("click", () => {
     document.body.classList.contains("light-theme") ? "dark" : "light"
   );
   const isLightMode = document.body.classList.toggle("light-theme");
-  toggleThemeButton.textContent = isLightMode ? "dark_mode" : "light_mode";
+  toggleThemeButton.innerText = isLightMode ? "dark_mode" : "light_mode";
 });
 
 // Delete chat history functionality
