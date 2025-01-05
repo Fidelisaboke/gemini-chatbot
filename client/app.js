@@ -3,6 +3,7 @@ endpoint and display the response on the webpage. */
 
 import { marked } from "https://cdn.jsdelivr.net/npm/marked/lib/marked.esm.js";
 
+let prompt = null;
 let isResponseGenerating = false;
 
 const chatList = document.querySelector(".chat-list");
@@ -14,16 +15,50 @@ const deleteChatButton = document.getElementById("delete-chat-button");
  * Load the chat history and theme from local storage.
  */
 function loadLocalStorageData() {
-  const chatHistory = localStorage.getItem("chatHistory");
+  const chatHistory = JSON.parse(localStorage.getItem("chatHistory")) || [];
   const theme = localStorage.getItem("theme");
   const isLightMode = theme === "light" || !theme;
 
   // Set the theme and chat history
   document.body.classList.toggle("light-theme", isLightMode);
   toggleThemeButton.innerText = isLightMode ? "dark_mode" : "light_mode";
-  chatList.innerHTML = chatHistory || "";
 
-  document.body.classList.toggle("hide-header", chatHistory);
+  // Display the chat history
+  chatList.innerHTML = "";
+  chatHistory.forEach((chat) => {
+    const prompt = chat.userMessage;
+    const rawApiResponse =
+      chat.apiResponse?.candidates[0].content.parts[0].text;
+    const parsedApiResponse = marked.parse(rawApiResponse);
+
+    let outgoingHtml = `
+      <div class="message-content">
+        <img src="images/user.svg" alt="User Avatar" class="avatar" />
+          <p class="text">${prompt}</p>
+      </div>
+      `;
+
+    const outgoingMessageDiv = createMessageElement(outgoingHtml, "outgoing");
+    chatList.appendChild(outgoingMessageDiv);
+
+    let incomingHtml = `
+      <div class="message-content">
+        <img src="images/gemini.svg" alt="Gemini Avatar" class="avatar" />
+        <p class="text"></p>
+      </div>
+      <span title="Copy to clipboard" class="icon material-symbols-rounded">content_copy</span>
+    `;
+
+    const incomingMessageDiv = createMessageElement(incomingHtml, "incoming");
+    chatList.appendChild(incomingMessageDiv);
+
+    const textElement = incomingMessageDiv.querySelector(".text");
+    textElement.innerHTML = parsedApiResponse;
+    hljs.highlightAll();
+    addCopyIconToCodeBlocks();
+  });
+
+  document.body.classList.toggle("hide-header", chatHistory.length > 0);
   chatList.scrollTo(0, chatList.scrollHeight);
 }
 
@@ -40,9 +75,9 @@ promptForm.addEventListener("submit", (event) => {
  *  Handle the outgoing message entered by the user.
  */
 function handleOutgoingMessage() {
-  let prompt = document.getElementById("prompt").value.trim();
+  prompt = document.getElementById("prompt").value.trim() || null;
   if (!prompt || isResponseGenerating) return;
-  
+
   isResponseGenerating = true;
 
   let html = `
@@ -159,14 +194,20 @@ function handlePromptResults(prompt, API_URL) {
     .then((response) => response.json())
     .then((data) => {
       console.log(data);
-      const apiResponse = data?.candidates[0].content.parts[0].text;
+      const rawApiResponse = data?.candidates[0].content.parts[0].text;
+      const parsedApiResponse = marked.parse(rawApiResponse);
       const incomingMessageDiv = handleIncomingMessage();
-      showTypingEffect(apiResponse, incomingMessageDiv);
+      showTypingEffect(rawApiResponse, incomingMessageDiv, parsedApiResponse);
+
+      // Save the chat history to local storage
+      let chatHistory = JSON.parse(localStorage.getItem("chatHistory")) || [];
+      chatHistory.push({ userMessage: prompt, apiResponse: data });
+      localStorage.setItem("chatHistory", JSON.stringify(chatHistory));
     })
     .catch((error) => {
       console.error(error);
       isResponseGenerating = false;
-      
+
       // Display an error message
       const incomingMessageDiv = handleIncomingMessage();
       const textElement = incomingMessageDiv.querySelector(".text");
@@ -214,6 +255,41 @@ function copyToClipboard(copyIcon) {
 }
 
 /**
+ * Add copy icon to code blocks and add language label
+ */
+function addCopyIconToCodeBlocks() {
+  const codeBlocks = document.querySelectorAll("pre");
+
+  codeBlocks.forEach((codeBlock) => {
+    // Add language label to code block
+    const codeElement = codeBlock.querySelector("code");
+    let language =
+      [...codeElement.classList]
+        .find((cls) => cls.startsWith("language-"))
+        ?.replace("language-", "") || "plaintext";
+    const languageLabel = document.createElement("div");
+    languageLabel.innerText =
+      language.charAt(0).toUpperCase() + language.slice(1);
+    languageLabel.classList.add("code-language-label");
+    codeBlock.appendChild(languageLabel);
+
+    // Add copy icon to code block
+    const copyIcon = document.createElement("span");
+    copyIcon.className = "icon material-symbols-rounded";
+    copyIcon.innerText = "content_copy";
+    copyIcon.title = "Copy to clipboard";
+    copyIcon.addEventListener("click", () => {
+      navigator.clipboard.writeText(codeElement.innerText);
+      copyIcon.innerText = "done";
+      setTimeout(() => {
+        copyIcon.innerText = "content_copy";
+      }, 1000);
+    });
+    codeBlock.appendChild(copyIcon);
+  });
+}
+
+/**
  * Show typing effect
  * @param {*} response - The response from the GPT-3 API
  * @param {*} incomingMessageDiv - The incoming message div
@@ -228,22 +304,28 @@ function showTypingEffect(response, incomingMessageDiv, parsedText) {
   let currWordIndex = 0;
 
   const interval = setInterval(() => {
-    textElement.innerText += (currWordIndex === 0? '' : ' ') + words[currWordIndex++];
+    textElement.innerText +=
+      (currWordIndex === 0 ? "" : " ") + words[currWordIndex++];
     if (currWordIndex === words.length) {
       clearInterval(interval);
       isResponseGenerating = false;
+      textElement.innerHTML = parsedText;
+      hljs.highlightAll();
+      addCopyIconToCodeBlocks();
       copyIcon.classList.remove("hide");
-      localStorage.setItem("chatHistory", chatList.innerHTML);
       return;
     }
-
   }, typingSpeed);
+}
+
+function escapeHTML(html) {
+  return html.replace;
 }
 
 // Event listeners for the suggestions on suggestions list
 suggestions.forEach((suggestion) => {
   suggestion.addEventListener("click", () => {
-    document.getElementById("prompt").value = suggestion.querySelector(".text").innerText;
+    prompt = suggestion.querySelector(".text").innerText;
     handleOutgoingMessage();
   });
 });
@@ -260,8 +342,10 @@ toggleThemeButton.addEventListener("click", () => {
 
 // Delete chat history functionality
 deleteChatButton.addEventListener("click", () => {
-  if(confirm("Are you sure you want to delete the chat history?")) {
+  if (confirm("Are you sure you want to delete the chat history?")) {
     localStorage.removeItem("chatHistory");
     loadLocalStorageData();
+    prompt = null;
+    isResponseGenerating = false;
   }
 });
