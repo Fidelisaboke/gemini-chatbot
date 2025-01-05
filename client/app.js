@@ -3,6 +3,7 @@ endpoint and display the response on the webpage. */
 
 import { marked } from "https://cdn.jsdelivr.net/npm/marked/lib/marked.esm.js";
 
+let isResponseGenerating = false;
 
 const chatList = document.querySelector(".chat-list");
 const suggestions = document.querySelectorAll(".suggestion-list .suggestion");
@@ -40,7 +41,10 @@ promptForm.addEventListener("submit", (event) => {
  */
 function handleOutgoingMessage() {
   let prompt = document.getElementById("prompt").value.trim();
-  if (!prompt) return;
+  if (!prompt || isResponseGenerating) return;
+  
+  isResponseGenerating = true;
+
   let html = `
       <div class="message-content">
         <img src="images/user.svg" alt="User Avatar" class="avatar" />
@@ -114,6 +118,14 @@ function processPrompt(prompt) {
     })
     .catch((error) => {
       console.error(error);
+      isResponseGenerating = false;
+
+      // Display an error message
+      const incomingMessageDiv = handleIncomingMessage();
+      const textElement = incomingMessageDiv.querySelector(".text");
+      textElement.textContent =
+        `An error occurred while processing the request. Error: ${error.message}`.trim();
+      textElement.classList.add("error");
     })
     .finally(() => {
       let loadingMessage = document.querySelector(".loading");
@@ -152,7 +164,15 @@ function handlePromptResults(prompt, API_URL) {
       showTypingEffect(apiResponse, incomingMessageDiv);
     })
     .catch((error) => {
-      console.log(error);
+      console.error(error);
+      isResponseGenerating = false;
+      
+      // Display an error message
+      const incomingMessageDiv = handleIncomingMessage();
+      const textElement = incomingMessageDiv.querySelector(".text");
+      textElement.textContent =
+        `An error occurred while processing the request. Error: ${error.message}`.trim();
+      textElement.classList.add("error");
     });
 }
 
@@ -208,6 +228,7 @@ function showTypingEffect(response, incomingMessageDiv) {
   const interval = setInterval(() => {
     if (i === words.length) {
       clearInterval(interval);
+      isResponseGenerating = false;
       copyIcon.classList.remove("hide");
       localStorage.setItem("chatHistory", chatList.innerHTML);
       return;
