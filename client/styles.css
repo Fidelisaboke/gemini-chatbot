@@ -190,6 +190,7 @@ body.hide-header .header {
     padding: 2rem 1rem 12rem;
     max-height: 100vh;
     overflow-y: auto;
+    scrollbar-color: #999 transparent;
 }
 
 .chat-list .message:where(.incoming, .outgoing) {
@@ -244,7 +245,7 @@ body.hide-header .header {
     visibility: hidden;
 }
 
-.chat-list .message:not(.loading):hover .icon {
+.chat-list .message:not(.loading):hover .icon:not(.hide) {
     visibility: visible;
 }
 

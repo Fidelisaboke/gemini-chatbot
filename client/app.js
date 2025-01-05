@@ -147,8 +147,8 @@ function handlePromptResults(prompt, API_URL) {
     .then((data) => {
       console.log(data);
       const apiResponse = data?.candidates[0].content.parts[0].text;
-      const textElement = handleIncomingMessage();
-      showTypingEffect(apiResponse, textElement);
+      const incomingMessageDiv = handleIncomingMessage();
+      showTypingEffect(apiResponse, incomingMessageDiv);
     })
     .catch((error) => {
       console.log(error);
@@ -176,8 +176,7 @@ function handleIncomingMessage() {
     copyToClipboard(copyIcon);
   });
 
-  const textElement = incomingMessageDiv.querySelector(".text");
-  return textElement;
+  return incomingMessageDiv;
 }
 
 /**
@@ -196,9 +195,11 @@ function copyToClipboard(copyIcon) {
 /**
  * Show typing effect
  * @param {*} response - The response from the GPT-3 API
- * @param {*} textElement - The text element to display the response
+ * @param {*} incomingMessageDiv - The incoming message div
  */
-function showTypingEffect(response, textElement) {
+function showTypingEffect(response, incomingMessageDiv) {
+  const textElement = incomingMessageDiv.querySelector(".text");
+  const copyIcon = incomingMessageDiv.querySelector(".icon");
   const words = response.split(" ");
   const typingSpeed = 20;
   let i = 0;
@@ -206,11 +207,15 @@ function showTypingEffect(response, textElement) {
   const interval = setInterval(() => {
     if (i === words.length) {
       clearInterval(interval);
+      copyIcon.classList.remove("hide");
       localStorage.setItem("chatHistory", chatList.innerHTML);
       return;
     }
+
     textElement.textContent += " " + words[i];
     i++;
+    copyIcon.classList.add("hide");
+
   }, typingSpeed);
 }
 
