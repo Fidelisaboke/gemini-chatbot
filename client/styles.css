@@ -1,11 +1,10 @@
-/* Montserrat font from Google Fonts */
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
 
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: "Poppins", sans-serif;
+    font-family: "Montserrat", sans-serif;
 }
 
 :root {
@@ -26,14 +25,15 @@ body {
     color: var(--text-color);
 }
 
-.header, .typing-form {
+.header, .chat-list .message, .typing-form {
     max-width: 1000px;
     margin: 0 auto;
 }
 
-.header{
+.header {
     margin-top: 7vh;
     padding: 1rem;
+    display: none;
 }
 
 .header :where(.title, .subtitle){
@@ -170,4 +170,99 @@ body {
     margin-top: 1rem;
     text-align: center;
     color: var(--placeholder-color);
+}
+
+.chat-list {
+    padding: 2rem 1rem 12rem;
+    max-height: 100vh;
+    overflow-y: auto;
+}
+
+.chat-list .message:where(.incoming, .outgoing) {
+    margin-bottom: 1.5rem;
+}
+
+.chat-list .message .message-content {
+    display: flex;
+    gap: 1.5rem;
+    width: 100%;
+    align-items: center;
+}
+
+.chat-list .message .avatar {
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+    border-radius: 50px;
+    align-self: flex-start;
+}
+
+.chat-list .message.loading .avatar {
+    animation: rotate 3s linear infinite;
+}
+
+@keyframes rotate {
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.chat-list .message .text {
+    color: var(--text-color);
+}
+
+.chat-list .message.loading .text {
+    display: none;
+}
+
+.chat-list .message .icon {
+    height: 35px;
+    width: 35px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    margin-left: 3.5rem;
+    border-radius: 50%;
+    color: var(--text-color);
+    background: var(--secondary-color);
+    visibility: hidden;
+}
+
+.chat-list .message:not(.loading):hover .icon {
+    visibility: visible;
+}
+
+.chat-list .message .icon:hover {
+    background: var(--secondary-hover-color)
+}
+
+.chat-list .loading-indicator {
+    display: flex;
+    width: 100%;
+    gap: 0.8rem;
+    flex-direction: column;
+}
+
+.chat-list .loading-indicator .loading-bar {
+    height: 11px;
+    width: 100%;
+    border-radius: 0.14rem;
+    background: linear-gradient(to right, #4285f4, var(--primary-color), #4285f4);
+    animation: animate 3s linear infinite;
+}
+
+.chat-list .loading-indicator .loading-bar:last-child {
+    width: 70%;
+}
+
+@keyframes animate {
+    0% {
+        background-position: -800px 0;
+    }
+
+    100% {
+        background-position: 800px 0;
+    }
 }
