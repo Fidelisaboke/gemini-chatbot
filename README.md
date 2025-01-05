@@ -13,25 +13,25 @@ This project was built with HTML, CSS and JavaScript.
 - [Node.js - JavaScript Runtime Environment](https://nodejs.org/)
 
 ### Installation Instructions
-1. Clone the repository:
+1. **Clone the repository:**
 ```bash
 git clone https://github.com/Fidelisaboke/gemini-chatbot.git
 cd gemini-chatbot
 ```
 
-2. Install the required packages:
+2. **Install the required packages:**
 ```bash
 npm install
 ```
 
-3. Create the `.env` file: The project requires an `.env` file which can be created by copying the `.env.example` file provided.
+3. **Create the `.env` file:** The project requires an `.env` file which can be created by copying the `.env.example` file provided.
 ```bash
 cp .env.example .env
 ```
 
-4. Set up the environment: Update the variables present in the  `.env` file. For further instructions on how to obtain your own API key, visit: [Get a Gemini API Key](https://ai.google.dev/gemini-api/docs/api-key)
+4. **Set up the environment:** Update the variables present in the  `.env` file. For further instructions on how to obtain your own API key, visit: [Get a Gemini API Key](https://ai.google.dev/gemini-api/docs/api-key)
 
-5. Start the server:
+5. **Start the server:**
 ```bash
 node server.js
 ```
