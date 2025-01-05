@@ -15,12 +15,14 @@ function loadLocalStorageData() {
   const chatHistory = localStorage.getItem("chatHistory");
   const theme = localStorage.getItem("theme");
   const isLightMode = theme === "light" || !theme;
+
+  // Set the theme and chat history
   document.body.classList.toggle("light-theme", isLightMode);
   toggleThemeButton.textContent = isLightMode ? "dark_mode" : "light_mode";
+  chatList.innerHTML = chatHistory || "";
 
-  if (chatHistory) {
-    chatList.innerHTML = chatHistory;
-  }
+  document.body.classList.toggle("hide-header", chatHistory);
+  chatList.scrollTo(0, chatList.scrollHeight);
 }
 
 loadLocalStorageData();
@@ -47,6 +49,9 @@ function handleOutgoingMessage() {
   const outgoingMessageDiv = createMessageElement(html, "outgoing");
   chatList.appendChild(outgoingMessageDiv);
   promptForm.reset();
+
+  chatList.scrollTo(0, chatList.scrollHeight);
+  document.body.classList.add("hide-header");
 
   setTimeout(showLoadingAnimation, 500);
   processPrompt(prompt);
@@ -195,7 +200,7 @@ function copyToClipboard(copyIcon) {
  */
 function showTypingEffect(response, textElement) {
   const words = response.split(" ");
-  const typingSpeed = 100;
+  const typingSpeed = 20;
   let i = 0;
 
   const interval = setInterval(() => {
