@@ -15,6 +15,7 @@
     --primary-color: #242424;
     --secondary-color: #383838;
     --secondary-hover-color: #444;
+    --error-text-color: #f86d6d;
 }
 
 .light-theme {
@@ -25,6 +26,7 @@
     --primary-color: #fff;
     --secondary-color: #e9eef6;
     --secondary-hover-color: #dbe1ea;
+    --error-text-color: #ff2626;
 }
 
 body {
@@ -51,7 +53,7 @@ body.hide-header .header {
 }
 
 .header :where(.title, .subtitle){
-    font-weight: 500;
+    font-weight: 600;
     line-height: 3.6rem;
 }
 
@@ -231,6 +233,9 @@ body.hide-header .header {
 .chat-list .message .text {
     color: var(--text-color);
 }
+.chat-list .message .text.error {
+    color: var(--error-text-color);
+}
 
 .chat-list .message.loading .text {
     display: none;
@@ -287,3 +292,33 @@ body.hide-header .header {
         background-position: 800px 0;
     }
 }
+
+
+/* Responsive styles */
+@media (max-width: 768px) {
+    .header :is(.title, .subtitle) {
+      font-size: 2rem;
+      line-height: 2.6rem;
+    }
+    .header .subtitle {
+      font-size: 1.7rem;
+    }
+    .typing-area :where(.typing-form, .action-buttons) {
+      gap: 0.4rem;
+    }
+    .typing-form .input-wrapper {
+      height: 50px;
+    }
+    .typing-form .input-box {
+      padding: 1.1rem 3.5rem 1.1rem 1.2rem;
+    }
+    .typing-area .icon {
+      height: 50px;
+      width: 50px;
+    }
+    .typing-area .disclaimer-text {
+      font-size: 0.75rem;
+      margin-top: 0.5rem;
+    }
+  }
+  
