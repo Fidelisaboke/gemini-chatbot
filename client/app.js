@@ -318,10 +318,6 @@ function showTypingEffect(response, incomingMessageDiv, parsedText) {
   }, typingSpeed);
 }
 
-function escapeHTML(html) {
-  return html.replace;
-}
-
 // Event listeners for the suggestions on suggestions list
 suggestions.forEach((suggestion) => {
   suggestion.addEventListener("click", () => {
