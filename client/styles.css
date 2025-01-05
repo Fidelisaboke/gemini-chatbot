@@ -17,6 +17,16 @@
     --secondary-hover-color: #444;
 }
 
+.light-theme {
+    /* Light theme */
+    --text-color: #242424;
+    --subheading-color: #a0a0a0;
+    --placeholder-color: #6c6c6c;
+    --primary-color: #fff;
+    --secondary-color: #e9eef6;
+    --secondary-hover-color: #dbe1ea;
+}
+
 body {
     background: var(--primary-color);
 }

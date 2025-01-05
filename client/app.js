@@ -3,13 +3,28 @@ endpoint and display the response on the webpage. */
 
 import { marked } from "https://cdn.jsdelivr.net/npm/marked/lib/marked.esm.js";
 
-// Custom renderer for marked.js
-const renderer = new marked.Renderer();
-renderer.paragraph = (text) => {
-  return `<p class="text">${text}</p>`;
-};
 
-let promptForm = document.getElementById("prompt-form");
+const chatList = document.querySelector(".chat-list");
+const toggleThemeButton = document.getElementById("toggle-theme-button");
+
+/**
+ * Load the chat history and theme from local storage.
+ */
+function loadLocalStorageData() {
+  const chatHistory = localStorage.getItem("chatHistory");
+  const theme = localStorage.getItem("theme");
+  const isLightMode = theme === "light" || !theme;
+  document.body.classList.toggle("light-theme", isLightMode);
+  toggleThemeButton.textContent = isLightMode ? "dark_mode" : "light_mode";
+
+  if (chatHistory) {
+    chatList.innerHTML = chatHistory;
+  }
+}
+
+loadLocalStorageData();
+
+const promptForm = document.getElementById("prompt-form");
 
 promptForm.addEventListener("submit", (event) => {
   event.preventDefault();
@@ -21,7 +36,6 @@ promptForm.addEventListener("submit", (event) => {
  */
 function handleOutgoingMessage() {
   let prompt = document.getElementById("prompt").value.trim();
-  let chatList = document.querySelector(".chat-list");
   if (!prompt) return;
   let html = `
       <div class="message-content">
@@ -54,7 +68,6 @@ function createMessageElement(html, ...classes) {
  * Show a loading animation while the response is being fetched.
  */
 function showLoadingAnimation() {
-  let chatList = document.querySelector(".chat-list");
   let html = `
       <div class="message-content">
         <img src="images/gemini.svg" alt="Gemini Avatar" class="avatar" />
@@ -141,7 +154,6 @@ function handlePromptResults(prompt, API_URL) {
  * @param {*} response - The response from the GPT-3 API
  */
 function handleIncomingMessage() {
-  let chatList = document.querySelector(".chat-list");
   let html = `
       <div class="message-content">
         <img src="images/gemini.svg" alt="Gemini Avatar" class="avatar" />
@@ -188,9 +200,20 @@ function showTypingEffect(response, textElement) {
   const interval = setInterval(() => {
     if (i === words.length) {
       clearInterval(interval);
+      localStorage.setItem("chatHistory", chatList.innerHTML);
       return;
     }
     textElement.textContent += " " + words[i];
     i++;
   }, typingSpeed);
 }
+
+// Theme toggle functionality
+toggleThemeButton.addEventListener("click", () => {
+  localStorage.setItem(
+    "theme",
+    document.body.classList.contains("light-theme") ? "dark" : "light"
+  );
+  const isLightMode = document.body.classList.toggle("light-theme");
+  toggleThemeButton.textContent = isLightMode ? "dark_mode" : "light_mode";
+});
