@@ -90,10 +90,14 @@ function processPrompt(prompt) {
       const modelName = "gemini-1.5-flash:generateContent";
       const API_URL = `${baseUrl}${modelName}?key=${API_KEY}`;
 
-      handlePromptResults(prompt, API_URL);
+      return handlePromptResults(prompt, API_URL);
     })
     .catch((error) => {
       console.error(error);
+    })
+    .finally(() => {
+      let loadingMessage = document.querySelector(".loading");
+      loadingMessage.remove();
     });
 }
 
@@ -119,20 +123,16 @@ function handlePromptResults(prompt, API_URL) {
     body: JSON.stringify(data),
   };
 
-  fetch(API_URL, options)
+  return fetch(API_URL, options)
     .then((response) => response.json())
     .then((data) => {
       console.log(data);
       const apiResponse = data?.candidates[0].content.parts[0].text;
-      const textElement = handleIncomingMessage(apiResponse);
+      const textElement = handleIncomingMessage();
       showTypingEffect(apiResponse, textElement);
     })
     .catch((error) => {
       console.log(error);
-    })
-    .finally(() => {
-      let loadingMessage = document.querySelector(".loading");
-      loadingMessage.remove();
     });
 }
 
@@ -140,20 +140,39 @@ function handlePromptResults(prompt, API_URL) {
  * Display the response from the GPT-3 API
  * @param {*} response - The response from the GPT-3 API
  */
-function handleIncomingMessage(response) {
+function handleIncomingMessage() {
   let chatList = document.querySelector(".chat-list");
   let html = `
       <div class="message-content">
         <img src="images/gemini.svg" alt="Gemini Avatar" class="avatar" />
-        <p class="text">${response}</p>
+        <p class="text"></p>
       </div>
-      <span class="icon material-symbols-rounded">content_copy</span>
+      <span title="Copy to clipboard" class="icon material-symbols-rounded">content_copy</span>
   `;
   const incomingMessageDiv = createMessageElement(html, "incoming");
   chatList.appendChild(incomingMessageDiv);
 
+  // Event listener for the copy icon
+  const copyIcon = incomingMessageDiv.querySelector(".icon");
+  copyIcon.addEventListener("click", () => {
+    copyToClipboard(copyIcon);
+  });
+
   const textElement = incomingMessageDiv.querySelector(".text");
   return textElement;
+}
+
+/**
+ * Copy the response to the clipboard
+ * @param {*} copyIcon
+ */
+function copyToClipboard(copyIcon) {
+  const messageText = copyIcon.parentElement.querySelector(".text").textContent;
+  navigator.clipboard.writeText(messageText);
+  copyIcon.textContent = "done";
+  setTimeout(() => {
+    copyIcon.textContent = "content_copy";
+  }, 1000);
 }
 
 /**
