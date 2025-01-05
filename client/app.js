@@ -6,6 +6,7 @@ import { marked } from "https://cdn.jsdelivr.net/npm/marked/lib/marked.esm.js";
 
 const chatList = document.querySelector(".chat-list");
 const toggleThemeButton = document.getElementById("toggle-theme-button");
+const deleteChatButton = document.getElementById("delete-chat-button");
 
 /**
  * Load the chat history and theme from local storage.
@@ -216,4 +217,12 @@ toggleThemeButton.addEventListener("click", () => {
   );
   const isLightMode = document.body.classList.toggle("light-theme");
   toggleThemeButton.textContent = isLightMode ? "dark_mode" : "light_mode";
+});
+
+// Delete chat history functionality
+deleteChatButton.addEventListener("click", () => {
+  if(confirm("Are you sure you want to delete the chat history?")) {
+    localStorage.removeItem("chatHistory");
+    loadLocalStorageData();
+  }
 });
