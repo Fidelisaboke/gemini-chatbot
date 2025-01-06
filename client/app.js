@@ -10,7 +10,7 @@ const chatList = document.querySelector(".chat-list");
 const suggestions = document.querySelectorAll(".suggestion-list .suggestion");
 const toggleThemeButton = document.getElementById("toggle-theme-button");
 const deleteChatButton = document.getElementById("delete-chat-button");
-console.log(suggestions);
+
 /**
  * Load the chat history and theme from local storage.
  */
@@ -62,6 +62,7 @@ function loadLocalStorageData() {
   chatList.scrollTo(0, chatList.scrollHeight);
 }
 
+// Load the chat history and theme from local storage on page load
 loadLocalStorageData();
 
 const promptForm = document.getElementById("prompt-form");
@@ -190,6 +191,7 @@ function handlePromptResults(prompt, API_URL) {
     body: JSON.stringify(data),
   };
 
+  // Send a POST request to the GPT-3 API
   return fetch(API_URL, options)
     .then((response) => response.json())
     .then((data) => {
@@ -303,6 +305,7 @@ function showTypingEffect(response, incomingMessageDiv, parsedText) {
   const typingSpeed = 20;
   let currWordIndex = 0;
 
+  // Interval to simulate typing effect
   const interval = setInterval(() => {
     textElement.innerText +=
       (currWordIndex === 0 ? "" : " ") + words[currWordIndex++];
