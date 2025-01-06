@@ -10,7 +10,7 @@ const chatList = document.querySelector(".chat-list");
 const suggestions = document.querySelectorAll(".suggestion-list .suggestion");
 const toggleThemeButton = document.getElementById("toggle-theme-button");
 const deleteChatButton = document.getElementById("delete-chat-button");
-
+console.log(suggestions);
 /**
  * Load the chat history and theme from local storage.
  */
@@ -68,6 +68,7 @@ const promptForm = document.getElementById("prompt-form");
 
 promptForm.addEventListener("submit", (event) => {
   event.preventDefault();
+  prompt = document.getElementById("prompt").value.trim();
   handleOutgoingMessage();
 });
 
@@ -75,7 +76,6 @@ promptForm.addEventListener("submit", (event) => {
  *  Handle the outgoing message entered by the user.
  */
 function handleOutgoingMessage() {
-  prompt = document.getElementById("prompt").value.trim() || null;
   if (!prompt || isResponseGenerating) return;
 
   isResponseGenerating = true;
