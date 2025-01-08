@@ -1,4 +1,4 @@
-/* This script is used to send a POST request directly to the GPT-3 API's 
+/* This script is used to send a POST request directly to the Google Gemini API's 
 endpoint and display the response on the webpage. */
 
 import { marked } from "https://cdn.jsdelivr.net/npm/marked/lib/marked.esm.js";
@@ -170,9 +170,9 @@ function processPrompt(prompt) {
 }
 
 /**
- * Get the response from the GPT-3 API
+ * Get the response from the Google Gemini API
  * @param {*} prompt - The prompt entered by the user
- * @param {*} API_URL - The URL of the GPT-3 API
+ * @param {*} API_URL - The URL of the Google Gemini API
  */
 function handlePromptResults(prompt, API_URL) {
   const data = {
@@ -191,7 +191,7 @@ function handlePromptResults(prompt, API_URL) {
     body: JSON.stringify(data),
   };
 
-  // Send a POST request to the GPT-3 API
+  // Send a POST request to the Google Gemini API
   return fetch(API_URL, options)
     .then((response) => response.json())
     .then((data) => {
@@ -220,8 +220,8 @@ function handlePromptResults(prompt, API_URL) {
 }
 
 /**
- * Display the response from the GPT-3 API
- * @param {*} response - The response from the GPT-3 API
+ * Display the response from the Google Gemini API
+ * @param {*} response - The response from the Google Gemini API
  */
 function handleIncomingMessage() {
   let html = `
@@ -293,7 +293,7 @@ function addCopyIconToCodeBlocks() {
 
 /**
  * Show typing effect
- * @param {*} response - The response from the GPT-3 API
+ * @param {*} response - The response from the Google Gemini API
  * @param {*} incomingMessageDiv - The incoming message div
  */
 function showTypingEffect(response, incomingMessageDiv, parsedText) {
