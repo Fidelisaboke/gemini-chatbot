@@ -38,6 +38,7 @@ node server.js
 
 ## Basic Usage
 Open `client/index.html` in your web browser. This will render the web application.
+- To preview the index page from GitHub, click [here](https://fidelisaboke.github.io/gemini-chatbot/client/index.html).
 
 ## Acknowledgements
 I would like to thank the creators of the following resources:
